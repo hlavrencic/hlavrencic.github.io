@@ -1,27 +1,27 @@
 import emoji from 'react-easy-emoji';
 
 export const greetings = {
-  name: 'Hanzla Tauqeer',
-  title: "Hi all, I'm Hanzla",
+  name: 'Hernan Lavrencic',
+  title: "Hi, I´m Hernan",
   description:
-    "I'm passionate Full Stack web developer having an experience of web applications with Python, Django, React.js, Next.js and Blockchain development on Ethereum, Solidity, Web3.js, Moralis, and Brownie Framework.",
+    "I’m a curious one. I love looking for technological solutions to everyday problems. This search prompted me to learn different technologies. It started with the creation of websites and continued to program mobile applications and IoT microcontrollers. During this journey, I have discovered that before implementing a new technology, we must get closer to people. Users and developers. From that moment I began to feel the importance of sharing knowledge. The pleasure of teaching and being taught. So I began to participate in the assembly of university classes, with the aim of preparing more students to get to the job they want.",
   resumeLink:
-    'https://docs.google.com/document/d/1_4RIfbyt4FFHW_bNplnoINQr01neTu7XDeeUlT_2O_k/edit?usp=sharing',
+    'https://docs.google.com/',
 };
 
 export const openSource = {
-  githubUserName: '1hanzla100',
+  githubUserName: 'hlavrencic',
 };
 
 export const contact = {};
 
 export const socialLinks = {
-  url: 'https://1hanzla100.github.io/',
-  linkedin: 'https://www.linkedin.com/in/1hanzla100/',
-  github: 'https://github.com/1hanzla100',
-  instagram: 'https://www.instagram.com/__hanzla100',
-  facebook: 'https://www.facebook.com/1hanzla100',
-  twitter: 'https://twitter.com/1hanzla100',
+  url: 'https://hlavrencic.github.io/',
+  linkedin: 'https://www.linkedin.com/in/hernan-lavrencic-65b33452/',
+  github: 'https://github.com/hlavrencic',
+  instagram: '#',
+  facebook: '#',
+  twitter: '#',
 };
 
 export const skillsSection = {
