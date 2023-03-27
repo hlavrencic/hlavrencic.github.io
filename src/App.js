@@ -9,7 +9,7 @@ extend({ WaterPass, GlitchPass })
 
 export default function App() {
 
-  const [comentarios, comentariosSet] = useState(['-Welcome']);
+  const [comentarios, comentariosSet] = useState(['Welcome. How can I help you?']);
   const [thinking, setThinking] = useState(true);
 
   useEffect(() => {
@@ -54,9 +54,11 @@ function Comentarios(props) {
 
   return (
     <div style={{ position: 'absolute', top: 40, left: 40, fontSize: '13px' }}>
+
       <ul >
         {items}
       </ul>
+      <hr />
       {props.thinking &&
         <img alt="spinner" src="https://www.furla.com/on/demandware.static/Sites-furla-au-Site/-/default/dw474b7f30/images/loader.gif" width="80" />}
     </div>
@@ -65,7 +67,7 @@ function Comentarios(props) {
 }
 
 function ItemsCanvas(props) {
-  const [backText, backTextSet] = useState('comments ...');
+  const [backText, backTextSet] = useState('type here');
 
   return (
     <>
@@ -164,6 +166,7 @@ function Input(props) {
           }}
           value={text}
           onKeyDown={handleKeyDown}
+          autofocus
         />
       </Html>
     </group>
