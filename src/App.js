@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Canvas, extend, useFrame } from '@react-three/fiber'
 import { useGLTF, Clone, AccumulativeShadows, RandomizedLight, Html, Text, Effects, Environment, Center } from '@react-three/drei'
 import { WaterPass, GlitchPass } from 'three-stdlib'
@@ -9,37 +9,73 @@ extend({ WaterPass, GlitchPass })
 
 export default function App() {
 
+  const [comentarios, comentariosSet] = useState(['-Welcome']);
+  const [thinking, setThinking] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setThinking(false), 2000);
+  });
+
+
+  const onSendHandle = comentario => {
+    comentariosSet(old => [...old, comentario]);
+
+    setThinking(true);
+    setTimeout(() => setThinking(false), 2000);
+
+    return true;
+  };
+
+  return (
+
+
+    // eventPrefix="client" to get client instead of offset coordinates
+    // offset would reset xy to 0 when hovering the html overlay
+    <>
+      <Canvas eventPrefix="client" shadows camera={{ position: [1, 0.5, 10] }}>
+        <color attach="background" args={['#f0f0f']} />
+        <ambientLight intensity={1} color={"#bdefff"} />
+        <spotLight position={[10, 10, 10]} angle={0.5} penumbra={1} castShadow />
+        <pointLight position={[-10, 0, -10]} intensity={2} />
+        <ItemsCanvas onSend={onSendHandle} />
+        <Environment preset="city" />
+        <Postpro />
+        <Rig />
+      </Canvas>
+      <Comentarios lista={comentarios} thinking={thinking} />
+    </>
+  )
+}
+
+function Comentarios(props) {
+  const items = props.lista.map((element, key) => <li style={{ listStyleType: 'none' }} key={key}>{element}</li>);
 
 
 
   return (
-    // eventPrefix="client" to get client instead of offset coordinates
-    // offset would reset xy to 0 when hovering the html overlay
-    <Canvas eventPrefix="client" shadows camera={{ position: [1, 0.5, 10] }}>
-      <color attach="background" args={['#f0f0f']} />
-      <ambientLight intensity={1} />
-      <spotLight position={[10, 10, 10]} angle={0.5} penumbra={1} castShadow />
-      <pointLight position={[-10, 0, -10]} intensity={2} />
-      <ItemsCanvas />
-      <Environment preset="city" />
-      <Postpro />
-      <Rig />
-    </Canvas>
-  )
+    <div style={{ position: 'absolute', top: 40, left: 40, fontSize: '13px' }}>
+      <ul >
+        {items}
+      </ul>
+      {props.thinking &&
+        <img alt="spinner" src="https://www.furla.com/on/demandware.static/Sites-furla-au-Site/-/default/dw474b7f30/images/loader.gif" width="80" />}
+    </div>
+
+  );
 }
 
-function ItemsCanvas() {
+function ItemsCanvas(props) {
   const [backText, backTextSet] = useState('comments ...');
 
   return (
     <>
-      <Input position={[0.4, 0, 0]} text={backText} onChange={backTextSet} />
+      <Input position={[0.4, 0, 0]} text={backText} onChange={backTextSet} onSend={props.onSend} />
       <group position={[0, -1, -2]}>
         <Model />
         <Sphere scale={0.25} position={[-3, 0, 2]} />
         <Sphere scale={0.25} position={[-4, 0, -2]} />
         <Sphere scale={0.65} position={[3.5, 0, -2]} />
-        <Text position={[0, 4, -10]} font="/Inter-Regular.woff" fontSize={2}>
+        <Text position={[0, 4, -10]} fontSize={2}>
           {backText}
           <meshStandardMaterial color="#aaa" toneMapped={false} />
         </Text>
@@ -92,13 +128,23 @@ function Model(props) {
 
   return (
     <Center ref={boxRef} top rotation={[-Math.PI / 2, 0, 0]}>
-      <Clone castShadow receiveShadow object={scene} scale={1.25} />
+      <Clone castShadow receiveShadow object={scene} scale={1.55} />
     </Center>
   )
 }
 
 function Input(props) {
-  const [text, set] = useState(props.text)
+  const [text, setText] = useState(props.text)
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      console.log('Enter');
+
+      props.onSend(text) && setText("");
+      props.onChange && props.onChange("");
+    }
+  };
+
   return (
     <group {...props}>
       <Text position={[-1.2, -0.022, 0]} anchorX="0px" font="/Inter-Regular.woff" fontSize={0.335} letterSpacing={-0.0}>
@@ -113,10 +159,11 @@ function Input(props) {
         <ControlledInput
           type={text}
           onChange={(e) => {
-            set(e.target.value)
-            if (props.onChange) props.onChange(e.target.value)
+            setText(e.target.value)
+            props.onChange && props.onChange(e.target.value)
           }}
           value={text}
+          onKeyDown={handleKeyDown}
         />
       </Html>
     </group>
