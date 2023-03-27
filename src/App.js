@@ -8,7 +8,10 @@ import { ControlledInput } from './ControlledInput'
 extend({ WaterPass, GlitchPass })
 
 export default function App() {
-  const [backText, backTextSet] = useState('comments ...');
+
+
+
+
   return (
     // eventPrefix="client" to get client instead of offset coordinates
     // offset would reset xy to 0 when hovering the html overlay
@@ -17,11 +20,22 @@ export default function App() {
       <ambientLight intensity={1} />
       <spotLight position={[10, 10, 10]} angle={0.5} penumbra={1} castShadow />
       <pointLight position={[-10, 0, -10]} intensity={2} />
+      <ItemsCanvas />
+      <Environment preset="city" />
+      <Postpro />
+      <Rig />
+    </Canvas>
+  )
+}
+
+function ItemsCanvas() {
+  const [backText, backTextSet] = useState('comments ...');
+
+  return (
+    <>
       <Input position={[0.4, 0, 0]} text={backText} onChange={backTextSet} />
       <group position={[0, -1, -2]}>
-        <Center top rotation={[0, -Math.PI / 2, 0]}>
-          <Model scale={1.25} />
-        </Center>
+        <Model />
         <Sphere scale={0.25} position={[-3, 0, 2]} />
         <Sphere scale={0.25} position={[-4, 0, -2]} />
         <Sphere scale={0.65} position={[3.5, 0, -2]} />
@@ -33,10 +47,7 @@ export default function App() {
           <RandomizedLight amount={8} radius={4} ambient={0.5} intensity={1} position={[2.5, 5, -10]} />
         </AccumulativeShadows>
       </group>
-      <Environment preset="city" />
-      <Postpro />
-      <Rig />
-    </Canvas>
+    </>
   )
 }
 
@@ -45,7 +56,7 @@ function Postpro() {
   useFrame((state) => (ref.current.time = state.clock.elapsedTime * 3))
   return (
     <Effects>
-      <waterPass ref={ref} factor={0.5} />
+      <waterPass ref={ref} factor={0.1} />
       <glitchPass />
     </Effects>
   )
@@ -70,8 +81,20 @@ function Sphere(props) {
 }
 
 function Model(props) {
-  const { scene } = useGLTF('https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/bunny/model.gltf')
-  return <Clone castShadow receiveShadow object={scene} {...props} />
+  const { scene } = useGLTF('./model.glb')
+
+  const boxRef = useRef();
+
+  useFrame(() => {
+    //boxRef.current.rotation.y += 0.05;
+    boxRef.current.rotation.z += 0.05;
+  });
+
+  return (
+    <Center ref={boxRef} top rotation={[-Math.PI / 2, 0, 0]}>
+      <Clone castShadow receiveShadow object={scene} scale={1.25} />
+    </Center>
+  )
 }
 
 function Input(props) {
